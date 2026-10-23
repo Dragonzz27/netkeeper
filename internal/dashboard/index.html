@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="refresh" content="60">
+  <title>校园网登录日志</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f5f7fa; color: #202b3b; font: 15px/1.6 system-ui, sans-serif; }
+    main { max-width: 1100px; margin: 48px auto; padding: 0 24px; }
+    h1 { margin-bottom: 4px; font-size: 28px; }
+    .muted { color: #64748b; }
+    section { margin: 24px 0; padding: 24px; border: 1px solid #e2e8f0; border-radius: 12px; background: white; }
+    h2 { margin-top: 0; font-size: 18px; }
+    svg { display: block; width: 100%; height: auto; }
+    svg text { font-size: 14px; fill: #64748b; }
+    .table { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; text-align: left; white-space: nowrap; }
+    td, th { padding: 12px; border-bottom: 1px solid #e2e8f0; }
+    th { color: #64748b; font-weight: 500; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>校园网登录日志</h1>
+  <p class="muted">共 {{len .Entries}} 次登录记录 · 每 60 秒自动刷新</p>
+  <section>
+    <h2>登录时间间隔（分钟）</h2>
+    {{if .Points}}
+    <svg viewBox="0 0 1000 350" role="img" aria-label="登录时间间隔折线图，横轴为登录时间，纵轴为分钟">
+      <path d="M60 40V290H940" fill="none" stroke="#cbd5e1"/>
+      <path d="M60 40H940M60 165H940" fill="none" stroke="#e2e8f0" stroke-dasharray="4 4"/>
+      <text x="8" y="45">{{printf "%.0f" .Maximum}}</text>
+      <text x="30" y="295">0</text>
+      <polyline points="{{.Line}}" fill="none" stroke="#2563eb" stroke-width="2.5"/>
+      {{range .Points}}<circle cx="{{.X}}" cy="{{.Y}}" r="4" fill="#2563eb"><title>{{.Entry.Timestamp}} · {{pretty .Entry.ElapsedMin}}</title></circle>{{end}}
+      <text x="60" y="330">{{(index .Entries 0).Timestamp}}</text>
+      <text x="940" y="330" text-anchor="end">登录时间 →</text>
+    </svg>
+    {{else}}<p class="muted">至少需要一条含登录间隔的记录才能绘图。</p>{{end}}
+  </section>
+  <section>
+    <h2>原始登录记录</h2>
+    <div class="table">
+      <table>
+        <thead><tr><th>登录时间</th><th>上次登录</th><th>间隔</th></tr></thead>
+        <tbody>
+        {{range .Entries}}<tr><td>{{.Timestamp}}</td><td>{{if .LastLogin}}{{.LastLogin}}{{else}}-{{end}}</td><td>{{pretty .ElapsedMin}}</td></tr>
+        {{else}}<tr><td colspan="3" class="muted">暂无登录日志，成功登录后会自动记录。</td></tr>{{end}}
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
+</body>
+</html>
