@@ -1,7 +1,6 @@
 .env
 login_log.jsonl
-/ecust-login
-/ecust-login.exe
+/netkeeper
 /dist/
 .idea/
 __pycache__/

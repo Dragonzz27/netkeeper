@@ -7,7 +7,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"ecust-network-auto-login/internal/cli"
+	"github.com/Dragonzz27/netkeeper/internal/cli"
 )
 
 func main() {

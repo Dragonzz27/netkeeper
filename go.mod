@@ -1,4 +1,4 @@
-module ecust-network-auto-login
+module github.com/Dragonzz27/netkeeper
 
 go 1.24.0
 

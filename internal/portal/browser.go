@@ -5,9 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
-	"os"
 	"os/exec"
-	"path/filepath"
 	"strings"
 	"time"
 
@@ -43,14 +41,7 @@ func New(opts Options) (*Browser, error) {
 	}
 	candidates := []string{opts.ChromePath}
 	if opts.ChromePath == "" {
-		candidates = []string{"google-chrome", "google-chrome-stable", "chromium", "chromium-browser", "chrome", "msedge",
-			"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-			"/Applications/Chromium.app/Contents/MacOS/Chromium"}
-		for _, base := range []string{os.Getenv("ProgramFiles"), os.Getenv("ProgramFiles(x86)"), os.Getenv("LOCALAPPDATA")} {
-			if base != "" {
-				candidates = append(candidates, filepath.Join(base, "Google", "Chrome", "Application", "chrome.exe"), filepath.Join(base, "Microsoft", "Edge", "Application", "msedge.exe"))
-			}
-		}
+		candidates = []string{"google-chrome", "google-chrome-stable", "chromium", "chromium-browser"}
 	}
 	for _, candidate := range candidates {
 		if path, err := exec.LookPath(candidate); err == nil {

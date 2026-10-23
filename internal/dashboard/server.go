@@ -12,7 +12,7 @@ import (
 	"strings"
 	"time"
 
-	"ecust-network-auto-login/internal/history"
+	"github.com/Dragonzz27/netkeeper/internal/history"
 )
 
 //go:embed index.html

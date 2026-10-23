@@ -5,11 +5,11 @@ import (
 	"text/tabwriter"
 	"time"
 
-	"ecust-network-auto-login/internal/config"
-	"ecust-network-auto-login/internal/dashboard"
-	"ecust-network-auto-login/internal/history"
-	"ecust-network-auto-login/internal/portal"
-	"ecust-network-auto-login/internal/runner"
+	"github.com/Dragonzz27/netkeeper/internal/config"
+	"github.com/Dragonzz27/netkeeper/internal/dashboard"
+	"github.com/Dragonzz27/netkeeper/internal/history"
+	"github.com/Dragonzz27/netkeeper/internal/portal"
+	"github.com/Dragonzz27/netkeeper/internal/runner"
 
 	"github.com/spf13/cobra"
 )
@@ -19,7 +19,7 @@ func NewCommand() *cobra.Command {
 	var envFile, logFile, username string
 	var interval time.Duration
 	root := &cobra.Command{
-		Use: "ecust-login", Short: "华东理工大学校园网自动登录工具",
+		Use: "netkeeper", Short: "Linux 服务器校园网自动登录工具（华东理工大学）",
 		SilenceUsage: true, SilenceErrors: true, Args: cobra.NoArgs,
 	}
 	root.CompletionOptions.DisableDefaultCmd = true

@@ -4,7 +4,6 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	"runtime"
 	"strings"
 	"testing"
 
@@ -53,7 +52,7 @@ func TestResolvePromptsAndPreservesOtherKeys(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if runtime.GOOS != "windows" && info.Mode().Perm() != 0600 {
+	if info.Mode().Perm() != 0600 {
 		t.Fatalf("configuration permission = %o", info.Mode().Perm())
 	}
 }

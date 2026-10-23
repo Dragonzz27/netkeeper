@@ -1,18 +1,18 @@
-# ECUST Network Auto Login
+# Netkeeper
 
-使用 Go 编写的华东理工大学校园网自动登录工具，基于 [Cobra](https://github.com/spf13/cobra) 提供命令行，通过 [chromedp](https://github.com/chromedp/chromedp/tree/v0.13.7) 控制 Chrome/Chromium。支持普通校园网、服务器机房新版 Srunsoft 登录页面、掉线重连和登录间隔可视化。
+面向 Linux 服务器的华东理工大学校园网自动登录工具，使用 Go 编写，基于 [Cobra](https://github.com/spf13/cobra) 提供命令行，通过 [chromedp](https://github.com/chromedp/chromedp/tree/v0.13.7) 控制 Chrome/Chromium。支持普通校园网、服务器机房新版 Srunsoft 登录页面、掉线重连和登录间隔可视化。
 
 ## 安装
 
-需要 Go 1.24+（仅编译时需要）及 Chrome 或 Chromium。无需 Python、Selenium、ChromeDriver 或前端构建工具。
+仅支持 Linux。需要 Go 1.24+（仅编译时需要）及 Chrome 或 Chromium；默认使用无头浏览器，可在没有桌面环境的服务器上运行。无需 Python、Selenium、ChromeDriver 或前端构建工具。
 
 ```bash
 go mod download
-go build -o ecust-login .
-./ecust-login --help
+go build -o netkeeper .
+./netkeeper --help
 ```
 
-Windows 编译时可使用 `go build -o ecust-login.exe .`。浏览器不在默认安装位置时，通过 `--chrome-path /path/to/chrome` 指定；Linux、macOS 和 Windows 的常见安装路径会自动查找。
+程序会在 `PATH` 中自动查找 `google-chrome`、`google-chrome-stable`、`chromium` 或 `chromium-browser`。浏览器不在 `PATH` 中时，通过 `--chrome-path /path/to/chrome` 指定。
 
 ## 账号配置
 
@@ -25,42 +25,39 @@ CAMPUS_PASSWORD='你的密码'
 
 可以复制 `.env.example` 后填写，也可通过环境变量设置相同的键。优先级为：`--username` > 环境变量 > `.env` > 交互输入。密码通过环境变量、配置文件或终端输入提供。
 
-首次启动 `run` / `login` 时，缺失的账号密码会提示输入，并写回所选 `.env` 文件；终端输入密码时不回显，新写入的配置文件权限为 `0600`（Windows 权限由系统管理）。无人值守运行前请配置好账号密码。`status`、`logs`、`serve` 不需要账号配置。
+首次启动 `run` / `login` 时，缺失的账号密码会提示输入，并写回所选 `.env` 文件；终端输入密码时不回显，新写入的配置文件权限为 `0600`。无人值守运行前请配置好账号密码。`.env` 默认相对于当前工作目录读取，也可用 `--env-file /absolute/path/to/.env` 指定。`status`、`logs`、`serve` 不需要账号配置。
 
 `.env` 以明文保存凭据，请仅存放在可信机器上。`.gitignore` 已忽略它；如果旧版本已跟踪该文件，忽略规则不会自动移除 Git 历史中的凭据。
 
 ## 使用
 
 ```bash
-# 默认每 60 秒检测一次，掉线后自动登录；直接运行 ./ecust-login 效果相同
-./ecust-login run
+# 默认每 60 秒检测一次，掉线后自动登录；直接运行 ./netkeeper 效果相同
+./netkeeper run
 
 # 原 main_server.py 对应模式：使用 #login 按钮，并设置页面选中的上网类型
-./ecust-login run --mode server
+./netkeeper run --mode server
 
 # 只登录一次，联网验证成功后退出并记录日志
-./ecust-login login
+./netkeeper login
 
 # 仅检测网络；已联网返回 0，离线或检测失败返回 1
-./ecust-login status
+./netkeeper status
 
 # 自定义间隔和单次操作超时
-./ecust-login run --interval 30s --timeout 45s
+./netkeeper run --interval 30s --timeout 45s
 
 # 指定认证页面、上网类型和浏览器
-./ecust-login run --mode server --portal-url http://gateway.example/login --domain @free --chrome-path /usr/bin/chromium
-
-# 显示浏览器窗口，便于检查页面适配（需要图形环境）
-./ecust-login login --headless=false
+./netkeeper run --mode server --portal-url http://gateway.example/login --domain @free --chrome-path /usr/bin/chromium
 
 # 仅在容器等环境确有需要时使用
-./ecust-login run --no-sandbox
+./netkeeper run --no-sandbox
 
 # 查看日志表格
-./ecust-login logs
+./netkeeper logs
 
 # 替代原 Streamlit app.py，在浏览器查看折线图和数据表
-./ecust-login serve
+./netkeeper serve
 ```
 
 `serve` 默认监听 `http://127.0.0.1:8501`，页面每 60 秒刷新一次，无外部 CDN 依赖；可用 `--addr` 修改监听地址。持续登录与日志页面可在两个终端分别运行。按 Ctrl+C 停止命令并释放浏览器进程。

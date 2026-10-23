@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"ecust-network-auto-login/internal/config"
-	"ecust-network-auto-login/internal/history"
+	"github.com/Dragonzz27/netkeeper/internal/config"
+	"github.com/Dragonzz27/netkeeper/internal/history"
 )
 
 type fakePortal struct {
