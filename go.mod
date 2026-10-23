@@ -4,7 +4,6 @@ go 1.24.0
 
 require (
 	github.com/chromedp/chromedp v0.13.7
-	github.com/joho/godotenv v1.5.1
 	github.com/spf13/cobra v1.9.1
 	golang.org/x/term v0.34.0
 )

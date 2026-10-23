@@ -16,18 +16,19 @@ go build -o netkeeper .
 
 ## 账号配置
 
-兼容原项目的 `.env`，无需迁移：
+通过环境变量提供账号密码：
 
-```dotenv
-CAMPUS_USERNAME='你的账号'
-CAMPUS_PASSWORD='你的密码'
+```bash
+export CAMPUS_USERNAME='你的账号'
+export CAMPUS_PASSWORD='你的密码'
+./netkeeper run
 ```
 
-可以复制 `.env.example` 后填写，也可通过环境变量设置相同的键。优先级为：`--username` > 环境变量 > `.env` > 交互输入。密码通过环境变量、配置文件或终端输入提供。
+账号优先级为：`--username` > 环境变量 `CAMPUS_USERNAME` > 交互输入。密码通过环境变量 `CAMPUS_PASSWORD` 或终端输入提供。
 
-首次启动 `run` / `login` 时，缺失的账号密码会提示输入，并写回所选 `.env` 文件；终端输入密码时不回显，新写入的配置文件权限为 `0600`。无人值守运行前请配置好账号密码。`.env` 默认相对于当前工作目录读取，也可用 `--env-file /absolute/path/to/.env` 指定。`status`、`logs`、`serve` 不需要账号配置。
+启动 `run` / `login` 时，缺失的账号密码会提示输入；终端输入密码时不回显，输入内容仅保存在进程内存中。程序不读取或生成 `.env` 配置文件。`status`、`logs`、`serve` 不需要账号配置。
 
-`.env` 以明文保存凭据，请仅存放在可信机器上。`.gitignore` 已忽略它；如果旧版本已跟踪该文件，忽略规则不会自动移除 Git 历史中的凭据。
+后台运行前请为进程设置好环境变量；使用 systemd 时，应在服务环境中设置 `CAMPUS_USERNAME` 和 `CAMPUS_PASSWORD`。缺少凭据且无法交互输入时，程序会报错退出。
 
 ## 使用
 
@@ -67,7 +68,6 @@ CAMPUS_PASSWORD='你的密码'
 | 参数 | 默认值 | 说明 |
 | --- | --- | --- |
 | `--mode` | `campus` | `campus` / `server` 登录页面 |
-| `--env-file` | `.env` | 配置文件路径 |
 | `--log-file` | `login_log.jsonl` | 日志文件路径 |
 | `--check-url` | `http://www.baidu.com` | 联网检测地址 |
 | `--portal-url` | `http://172.20.3.90:804/srun_portal_pc.php` | 没有发现认证重定向时使用的地址 |
@@ -90,7 +90,7 @@ go test -race ./...
 go vet ./...
 ```
 
-可选浏览器集成测试使用本地模拟网关，不会访问真实校园网或使用 `.env` 中的凭据：
+可选浏览器集成测试使用本地模拟网关和测试账号，不会访问真实校园网：
 
 ```bash
 ECUST_TEST_CHROME=/path/to/chrome go test ./internal/portal -run TestBrowser -v
@@ -100,7 +100,7 @@ ECUST_TEST_CHROME=/path/to/chrome go test ./internal/portal -run TestBrowser -v
 ```text
 main.go                命令行入口
 internal/cli/          Cobra 命令和参数
-internal/config/       .env 与交互式凭据
+internal/config/       环境变量与交互式凭据
 internal/portal/       浏览器检测与两种登录页面
 internal/runner/       定时检测与自动重连
 internal/history/      兼容原格式的 JSONL 日志

@@ -21,7 +21,7 @@ func TestHelpAndLogsNeedNoBrowserOrCredentials(t *testing.T) {
 }
 
 func TestRejectInvalidArguments(t *testing.T) {
-	for _, args := range [][]string{{"run", "--interval", "0s"}, {"status", "--mode", "unknown"}, {"login", "extra"}, {"status", "--check-url", "file:///etc/passwd"}} {
+	for _, args := range [][]string{{"run", "--interval", "0s"}, {"status", "--mode", "unknown"}, {"login", "extra"}, {"status", "--check-url", "file:///etc/passwd"}, {"run", "--env-file", "account.env"}} {
 		command := NewCommand()
 		command.SetArgs(args)
 		command.SetIn(strings.NewReader(""))

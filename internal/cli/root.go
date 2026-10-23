@@ -16,7 +16,7 @@ import (
 
 func NewCommand() *cobra.Command {
 	var opts portal.Options
-	var envFile, logFile, username string
+	var logFile, username string
 	var interval time.Duration
 	root := &cobra.Command{
 		Use: "netkeeper", Short: "Linux 服务器校园网自动登录工具（华东理工大学）",
@@ -24,9 +24,8 @@ func NewCommand() *cobra.Command {
 	}
 	root.CompletionOptions.DisableDefaultCmd = true
 	flags := root.PersistentFlags()
-	flags.StringVar(&envFile, "env-file", ".env", "账号密码配置文件")
 	flags.StringVar(&logFile, "log-file", "login_log.jsonl", "登录日志文件")
-	flags.StringVarP(&username, "username", "u", "", "校园网账号（优先于环境变量和 .env）")
+	flags.StringVarP(&username, "username", "u", "", "校园网账号（优先于环境变量）")
 	flags.StringVar(&opts.Mode, "mode", "campus", "登录页面类型：campus 或 server")
 	flags.StringVar(&opts.CheckURL, "check-url", "http://www.baidu.com", "用于验证联网状态的地址")
 	flags.StringVar(&opts.PortalURL, "portal-url", "http://172.20.3.90:804/srun_portal_pc.php", "未发现重定向时使用的认证地址")
@@ -49,7 +48,7 @@ func NewCommand() *cobra.Command {
 		if err != nil {
 			return nil, err
 		}
-		credentials, err := config.Resolve(envFile, username, cmd.InOrStdin(), cmd.ErrOrStderr())
+		credentials, err := config.Resolve(username, cmd.InOrStdin(), cmd.ErrOrStderr())
 		if err != nil {
 			return nil, err
 		}
